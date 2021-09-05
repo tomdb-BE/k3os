@@ -1,5 +1,6 @@
 ARG REPO
 ARG TAG
+ARG ARCH
 FROM ${REPO}/k3os-base:${TAG} as base
 
 ARG REPO
@@ -12,7 +13,6 @@ FROM ${REPO}/k3os-k3s:${TAG} as k3s
 
 ARG REPO
 ARG RKE2_VERSION=v1.21.4-rke2r2-build20210825
-ARG ARCH=amd64
 FROM ${REPO}/rke2-runtime:${RKE2_VERSION}-linux-${ARCH} AS runtime
 
 FROM base as k3os-build
