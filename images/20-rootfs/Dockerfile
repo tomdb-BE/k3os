@@ -10,6 +10,11 @@ ARG REPO
 ARG TAG
 FROM ${REPO}/k3os-k3s:${TAG} as k3s
 
+ARG REPO
+ARG RKE2_VERSION=v1.21.4-rke2r2-build20210825
+ARG ARCH
+FROM ${REPO}/rke2-runtime:${RKE2_VERSION}-linux-${ARCH} AS runtime
+
 FROM base as k3os-build
 ARG VERSION
 ARG ARCH
@@ -89,11 +94,11 @@ COPY --from=progs /output/kubectx/kubectx /output/kubectx/kubens /usr/src/image/
 
 COPY overlay/ /usr/src/image/
 
+COPY --from=runtime /bin/crictl /usr/src/image/sbin/crictl
+COPY --from=runtime /bin/runc /usr/src/image/sbin/runc
+COPY --from=runtime /bin/kubectl /usr/src/image/sbin/kubectl
 RUN ln -s /k3os/system/k3os/current/k3os /usr/src/image/sbin/k3os
 RUN ln -s /k3os/system/k3s/current/k3s /usr/src/image/sbin/k3s
-COPY --from=k3s /output/kubectl /usr/src/image/sbin/kubectl
-COPY --from=k3s /output/crictl /usr/src/image/sbin/crictl
-COPY --from=k3s /output/ctr /usr/src/image/sbin/ctr
 
 COPY install.sh /usr/src/image/libexec/k3os/install
 RUN sed -i -e "s/%VERSION%/${VERSION}/g" -e "s/%ARCH%/${ARCH}/g" /usr/src/image/lib/os-release
