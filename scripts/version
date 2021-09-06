@@ -7,9 +7,9 @@ fi
 COMMIT=$(git rev-parse --short HEAD)
 GIT_TAG=${DRONE_TAG:-$(git tag -l --contains HEAD | head -n 1)}
 
-if [[ -z "$DIRTY" && -n "$GIT_TAG" ]]; then
+if [[ -z "$DIRTY" && -n "$GIT_TAG" && -z "$VERSION" ]]; then
     VERSION=$GIT_TAG
-else
+elif [ -z "$VERSION" ]; then
     VERSION="$(git describe --always --tags)${DIRTY}"
 fi
 
@@ -17,7 +17,10 @@ if [ -z "$ARCH" ]; then
     ARCH=$(go env GOHOSTARCH)
 fi
 
-ARCH=${ARCH:-"amd64"}
+if [ -z "$RKE2_VERSION" ]; then
+    RKE2_VERSION=${VERSION}
+fi
+
 TAG=${TAG:-"${VERSION}-${ARCH}"}
 REPO=${REPO:-rancher}
 

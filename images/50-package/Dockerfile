@@ -16,7 +16,7 @@ COPY --from=bin /output/  /output/k3os/system/k3os/${VERSION}/
 
 WORKDIR /output/k3os/system/k3s
 RUN mkdir -vp $(cat version) /output/sbin
-RUN mv -vf crictl ctr kubectl /output/sbin/
+RUN mv -vf crictl ctr kubectl /output/sbin/$(cat version)
 RUN ln -sf $(cat version) current
 RUN mv -vf install.sh current/k3s-install.sh
 RUN mv -vf k3s current/
@@ -27,3 +27,6 @@ WORKDIR /output/k3os/system/k3os
 RUN ln -sf ${VERSION} current
 RUN ln -sf /k3os/system/k3os/current/k3os /output/sbin/k3os
 RUN ln -sf k3os /output/sbin/init
+RUN echo 'k3s_args:' >> config.yaml                                           && \
+    echo '"--data-dir /var/lib/rancher/k3s"' >> config.yaml                   && \
+    echo '"--write-kubeconfig /var/lib/rancher/k3s/k3s.yaml"' >> config.yaml

@@ -1,7 +1,7 @@
 ARG REPO
 ARG TAG
 ARG VERSION
-ARG RKE2_VERSION=v1.21.4-rke2r2-build20210825
+ARG RKE2_VERSION
 ARG ARCH
 FROM ${REPO}/rke2-runtime:${RKE2_VERSION}-linux-${ARCH} AS runtime
 FROM ${REPO}/k3os-base:${TAG}
@@ -17,7 +17,7 @@ ENV INSTALL_K3S_VERSION=${K3S_VERSION} \
 RUN chmod +x /output/install.sh
 RUN /output/install.sh
 COPY --from=runtime /bin/crictl /output/crictl
-COPY --from=runtime /bin/runc /output/runc
 COPY --from=runtime /bin/kubectl /output/kubectl
+COPY --from=runtime /bin/ctr /output/ctr
 ADD ./rke2 /output/k3s
 RUN echo "${VERSION}" > /output/version
