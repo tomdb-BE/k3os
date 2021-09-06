@@ -16,10 +16,9 @@ COPY --from=bin /output/  /output/k3os/system/k3os/${VERSION}/
 
 WORKDIR /output/k3os/system/k3s
 RUN mkdir -vp $(cat version) /output/sbin
-RUN mv -vf crictl ctr kubectl /output/sbin/$(cat version)
+RUN mv -vf k3s crictl ctr kubectl $(cat version)
 RUN ln -sf $(cat version) current
 RUN mv -vf install.sh current/k3s-install.sh
-RUN mv -vf k3s current/
 RUN rm -vf version *.sh
 RUN ln -sf /k3os/system/k3s/current/k3s /output/sbin/k3s
 
