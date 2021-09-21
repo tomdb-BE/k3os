@@ -16,7 +16,7 @@ COPY --from=bin /output/  /output/k3os/system/k3os/${VERSION}/
 
 WORKDIR /output/k3os/system/rke2
 RUN mkdir -vp $(cat version) /output/sbin
-RUN mv -vf rke2 $(cat version)
+RUN mv -vf k3s $(cat version)
 RUN ln -sf $(cat version) current
 RUN mv -vf install.sh current/rke2-install.sh
 RUN ln -sf current/rke2-install.sh current/k3s-install.sh
