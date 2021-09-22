@@ -97,9 +97,9 @@ COPY overlay/ /usr/src/image/
 RUN ln -s /k3os/system/k3os/current/k3os /usr/src/image/sbin/k3os
 RUN ln -s /k3os/system/rke2/current/rke2 /usr/src/image/sbin/rke2
 RUN ln -s /k3os/system/rke2/current/rke2 /usr/src/image/sbin/k3s
-RUN ln -s /k3os/system/rke2/current/kubectl /usr/src/image/sbin/kubectl
-RUN ln -s /k3os/system/rke2/current/crictl /usr/src/image/sbin/crictl
-RUN ln -s /k3os/system/rke2/current/ctr /usr/src/image/sbin/ctr
+RUN ln -s /var/lib/rancher/rke2/bin/kubectl /usr/src/image/sbin/kubectl
+RUN ln -s /var/lib/rancher/rke2/bin/crictl /usr/src/image/sbin/crictl
+RUN ln -s /var/lib/rancher/rke2/bin/ctr /usr/src/image/sbin/ctr
 RUN mkdir -p /etc/rancher/rke2
 RUN ln -s /etc/rancher/rke2 /etc/rancher/k3s
 
