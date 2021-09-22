@@ -22,6 +22,6 @@ RUN chmod +x install.sh
 RUN ./install.sh
 RUN mkdir /output
 RUN echo "${RKE2_VERSION}" > /output/version
-RUN mv ./bin/rke2 /output/
-RUN mv ./bin/rke2-killall.sh /output/
+RUN mv /usr/local/bin/rke2 /output/
+RUN mv /usr/local/bin/rke2-killall.sh /output/
 run mv ./install.sh /output/

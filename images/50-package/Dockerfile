@@ -20,7 +20,7 @@ RUN ln -sf $(cat version) current
 RUN mv -vf install.sh current/rke2-install.sh
 RUN ln -sf rke2-install.sh current/k3s-install.sh
 RUN mv -vf rke2 current/
-RUN mv -vf rke2-killall-sh current/
+RUN mv -vf rke2-killall.sh current/
 RUN rm -vf version *.sh
 RUN ln -sf /k3os/system/rke2/current/rke2 /output/sbin/rke2
 RUN ln -sf /k3os/system/rke2/current/rke2 /output/sbin/k3s
