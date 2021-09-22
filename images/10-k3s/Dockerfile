@@ -22,3 +22,5 @@ RUN chmod +x /bin/systemctl
 RUN /output/install.sh
 RUN echo "${RKE2_VERSION}" > /output/version
 RUN mv /output/bin/rke2 /output/k3s
+RUN mv /output/bin/rke2/rke2-killall.sh /output/
+RUN rm -rf lib share bin
