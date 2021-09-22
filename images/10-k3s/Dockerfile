@@ -17,6 +17,7 @@ ADD https://raw.githubusercontent.com/tomdb-BE/rke2/${RKE2_VERSION}/install.sh .
 RUN sed -i '/systemd/d' ./install.sh
 RUN sed -i '/systemctl/d' ./install.sh
 RUN sed -i "s/github\.com\/rancher\//github\.com\/${GITREPO}\//" install.sh
+RUN sed -i "s/setup_arch$/SUFFIX=linux\n\ \ \ \ ARCH=${ARCH}/g" install.sh
 RUN sha256sum rke2.linux-${ARCH}.tar.gz > sha256sum-${ARCH}.txt
 ENV INSTALL_RKE2_VERSION=${RKE2_VERSION}
 RUN chmod +x install.sh
