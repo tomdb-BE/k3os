@@ -103,7 +103,7 @@ RUN ln -s /var/lib/rancher/rke2/bin/ctr /usr/src/image/sbin/ctr
 RUN mkdir -p /usr/src/image/etc/rancher/rke2
 RUN ln -s rke2.yaml /usr/src/image/etc/rancher/rke2/k3s.yaml
 RUN ln -s /etc/rancher/rke2 /usr/src/image/etc/rancher/k3s
-RUN chown -R rancher:rancher /usr/src/image/etc
+RUN chown -R 1000:1000 /usr/src/image/etc/rancher
 
 COPY install.sh /usr/src/image/libexec/k3os/install
 RUN sed -i -e "s/%VERSION%/${VERSION}/g" -e "s/%ARCH%/${ARCH}/g" /usr/src/image/lib/os-release
