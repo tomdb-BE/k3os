@@ -20,6 +20,7 @@ RUN sha256sum rke2.linux-${ARCH}.tar.gz > sha256sum-${ARCH}.txt
 ENV INSTALL_RKE2_VERSION=${RKE2_VERSION}
 RUN chmod +x install.sh
 RUN ./install.sh
+RUN mkdir /output
 RUN echo "${RKE2_VERSION}" > /output/version
 RUN mv ./bin/rke2 /output/
 RUN mv ./bin/rke2-killall.sh /output/
