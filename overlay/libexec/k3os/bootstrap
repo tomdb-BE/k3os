@@ -27,8 +27,8 @@ setup_users()
     sed -i 's/^(sudo:.*)/\1rancher/g' /etc/group
     addgroup -g 1000 rancher
     adduser -s /bin/bash -u 1000 -D -G rancher rancher
-    mkdir /home/rancher/.kube
-    ln -s /etc/rancher/k3s/k3s.yaml /home/rancher/.kube/config
+    mkdir -p /home/rancher/.kube
+    ln -sf /etc/rancher/k3s/k3s.yaml /home/rancher/.kube/config
     chown -R 1000:1000 /home/rancher/.kube
     echo 'rancher:*' | chpasswd -e
 }
