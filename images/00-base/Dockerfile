@@ -1,5 +1,5 @@
 ### BASE ###
-FROM alpine:3.12 as base
+FROM alpine:3.14 as base
 ARG ARCH
 RUN apk --no-cache add \
     bash \
@@ -10,6 +10,7 @@ RUN apk --no-cache add \
     connman \
     conntrack-tools \
     coreutils \
+    cryptsetup \
     curl \
     dbus \
     dmidecode \
@@ -19,6 +20,7 @@ RUN apk --no-cache add \
     efibootmgr \
     eudev \
     findutils \
+    gcompat \
     grub-efi \
     haveged \
     htop \
@@ -30,6 +32,8 @@ RUN apk --no-cache add \
     jq \
     kbd-bkeymaps \
     lm-sensors \
+    libc6-compat \
+    libusb \
     logrotate \
     lsscsi \
     lvm2 \

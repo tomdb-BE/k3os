@@ -10,7 +10,8 @@ ARG K3S_VERSION
 ARG RKE2_VERSION
 ARG ARCH
 ARG GITREPO
-ENV VERSION=${K3S_VERSION}
+ENV ARCH ${ARCH}
+ENV VERSION ${K3S_VERSION}
 ENV GTIREPO=${GITREPO}
 ADD https://github.com/${GITREPO}/rke2/releases/download/${RKE2_VERSION}/rke2.linux-${ARCH}.tar.gz ./
 ADD https://raw.githubusercontent.com/tomdb-BE/rke2/${RKE2_VERSION}/install.sh ./
