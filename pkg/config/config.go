@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-type K3OS struct {
+type RKE2OS struct {
 	DataSources    []string          `json:"dataSources,omitempty"`
 	Modules        []string          `json:"modules,omitempty"`
 	Sysctls        map[string]string `json:"sysctls,omitempty"`
@@ -17,7 +17,7 @@ type K3OS struct {
 	ServerURL      string            `json:"serverUrl,omitempty"`
 	Token          string            `json:"token,omitempty"`
 	Labels         map[string]string `json:"labels,omitempty"`
-	K3sArgs        []string          `json:"k3sArgs,omitempty"`
+	Rke2Args       []string          `json:"rke2Args,omitempty"`
 	Environment    map[string]string `json:"environment,omitempty"`
 	Taints         []string          `json:"taints,omitempty"`
 	Install        *Install          `json:"install,omitempty"`
@@ -44,7 +44,7 @@ type CloudConfig struct {
 	SSHAuthorizedKeys []string `json:"sshAuthorizedKeys,omitempty"`
 	WriteFiles        []File   `json:"writeFiles,omitempty"`
 	Hostname          string   `json:"hostname,omitempty"`
-	K3OS              K3OS     `json:"k3os,omitempty"`
+	RKE2OS            RKE2OS   `json:"rke2os,omitempty"`
 	Runcmd            []string `json:"runCmd,omitempty"`
 	Bootcmd           []string `json:"bootCmd,omitempty"`
 	Initcmd           []string `json:"initCmd,omitempty"`

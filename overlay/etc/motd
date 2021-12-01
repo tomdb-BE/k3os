@@ -1,8 +1,11 @@
-Welcome to k3OS!
+Welcome to RKE2OS!
 
-Refer to https://github.com/rancher/k3os for README and issues.
+WARNING: this is an experimental fork of https://github.com/rancher/k3os
+For testing purposes only - not supported by author/rancher - use at own risk
 
-The default mode of k3OS is to run a single node cluster. Use "kubectl"
-to access it. The node token in /var/lib/rancher/k3s/server/node-token
+Refer to https://github.com/tomdb-be/rke2os for README and issues.
+
+The default mode of RKE2OS is to run a single node cluster. Use "kubectl"
+to access it. The node token in /var/lib/rancher/rke2/server/node-token
 can be used to join agents to this server.
 

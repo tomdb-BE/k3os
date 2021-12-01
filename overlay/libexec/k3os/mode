@@ -7,11 +7,11 @@ for x in $(cat /proc/cmdline); do
         rescue)
             MODE=shell
             ;;
-        k3os.mode=*)
-            MODE=${x#k3os.mode=}
+        rke2os.mode=*)
+            MODE=${x#rke2os.mode=}
             ;;
-        k3os.fallback_mode=*)
-            FALLBACK_MODE=${x#k3os.fallback_mode=}
+        rke2os.fallback_mode=*)
+            FALLBACK_MODE=${x#rke2os.fallback_mode=}
             ;;
     esac
 done
@@ -20,12 +20,12 @@ MODE_WAIT_SECONDS=30
 
 while [ -z "$MODE" ] && (( MODE_WAIT_SECONDS > 0 )); do
 
-if [ -z "$MODE" ] && [ -n "$(blkid -L K3OS_STATE)" ]; then
+if [ -z "$MODE" ] && [ -n "$(blkid -L RKE2OS_STATE)" ]; then
     MODE=disk
 fi
 
-if [ -n "$K3OS_MODE" ]; then
-    MODE=$K3OS_MODE
+if [ -n "$RKE2OS_MODE" ]; then
+    MODE=$RKE2OS_MODE
 fi
 
 if [ -z "$MODE" ]; then
@@ -44,9 +44,9 @@ fi
 done
 
 if [ -z "$MODE" ]; then
-    pfatal "Failed to determine boot mode (did you forget to set k3os.mode?)"
+    pfatal "Failed to determine boot mode (did you forget to set rke2os.mode?)"
 elif [ ! -e $SCRIPTS/mode-${MODE} ]; then
     pfatal "Mode script does not exist for ${MODE}"
 else
-    echo "$MODE" > /run/k3os/mode
+    echo "$MODE" > /run/rke2os/mode
 fi

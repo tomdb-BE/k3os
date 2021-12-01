@@ -2,7 +2,7 @@
   "builders": [
     {
       "access_key": "{{user `aws_access_key`}}",
-      "ami_name": "rancher-k3os-{{user `k3os_version`}}-arm64-{{isotime `200601020304`}}",
+      "ami_name": "rancher-rke2os-{{user `rke2os_version`}}-arm64-{{isotime `200601020304`}}",
       "instance_type": "a1.large",
       "region": "{{user `region`}}",
       "secret_key": "{{user `aws_secret_key`}}",
@@ -19,8 +19,8 @@
       },
       "ssh_username": "ubuntu",
       "tags": {
-        "Name": "k3OS",
-        "Version": "{{user `k3os_version`}}"
+        "Name": "rke2OS",
+        "Version": "{{user `rke2os_version`}}"
       },
       "type": "amazon-ebs"
     }
@@ -55,8 +55,8 @@
   "variables": {
     "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
-    "iso_url": "https://github.com/rancher/k3os/releases/download/v0.11.0/k3os-arm64.iso",
-    "k3os_version": "v0.11.0",
+    "iso_url": "https://github.com/rancher/rke2os/releases/download/v0.11.0/rke2os-arm64.iso",
+    "rke2os_version": "v0.11.0",
     "region": "{{env `AWS_DEFAULT_REGION`}}"
   }
 }

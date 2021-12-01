@@ -34,7 +34,7 @@
     "boot_command": [
       "rancher",
       "<enter>",
-      "sudo k3os install",
+      "sudo rke2os install",
       "<enter>",
       "1",
       "<enter>",

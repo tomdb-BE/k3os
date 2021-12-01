@@ -1,19 +1,11 @@
 ARG REPO
 ARG TAG
-ARG ARCH
-ARG RKE2_VERSION=v1.21.4-rke2r2-build20210825
 
-FROM ${REPO}/k3os-base:${TAG} as base
+FROM ${REPO}/rke2os-base:${TAG} as base
+FROM ${REPO}/rke2os-progs:${TAG} as progs
+FROM ${REPO}/rke2os-k3s:${TAG} as rke2
 
-ARG REPO
-ARG TAG
-FROM ${REPO}/k3os-progs:${TAG} as progs
-
-ARG REPO
-ARG TAG
-FROM ${REPO}/k3os-k3s:${TAG} as k3s
-
-FROM base as k3os-build
+FROM base as rke2os-build
 ARG VERSION
 ARG ARCH
 RUN apk add squashfs-tools
@@ -58,7 +50,7 @@ RUN rm -rf /usr/src/image/local \
 
 # setup /usr/libexec/kubernetes
 RUN rm -rf /usr/libexec/kubernetes \
- && ln -s /var/lib/rancher/k3s/agent/libexec/kubernetes /usr/src/image/libexec/kubernetes
+ && ln -s /var/lib/rancher/rke2/agent/libexec/kubernetes /usr/src/image/libexec/kubernetes
 
 # cleanup files hostname/hosts
 RUN rm -rf \
@@ -86,24 +78,33 @@ RUN rm -rf \
     /usr/src/image/usr/share/vim/vim81/tutor \
     /usr/src/image/usr/share/vim/vim81/doc
 
-COPY --from=k3s /output/install.sh /usr/src/image/libexec/k3os/k3s-install.sh
+COPY --from=rke2 /output/rke2-install.sh /usr/src/image/libexec/rke2os/rke2-install.sh
 COPY --from=progs /output/metadata /usr/src/image/sbin/metadata
 COPY --from=progs /output/kubectx/kubectx /output/kubectx/kubens /usr/src/image/bin/
 
 COPY overlay/ /usr/src/image/
 
-RUN ln -s /k3os/system/k3os/current/k3os /usr/src/image/sbin/k3os
-RUN ln -s /k3os/system/rke2/current/rke2 /usr/src/image/sbin/rke2
-RUN ln -s /k3os/system/rke2/current/rke2 /usr/src/image/sbin/k3s
-RUN ln -s /var/lib/rancher/rke2/bin/kubectl /usr/src/image/sbin/kubectl
-RUN ln -s /var/lib/rancher/rke2/bin/crictl /usr/src/image/sbin/crictl
-RUN ln -s /var/lib/rancher/rke2/bin/ctr /usr/src/image/sbin/ctr
-RUN mkdir -p /usr/src/image/etc/rancher/rke2
-RUN ln -s rke2.yaml /usr/src/image/etc/rancher/rke2/k3s.yaml
-RUN ln -s /etc/rancher/rke2 /usr/src/image/etc/rancher/k3s
-RUN chown -R 1000:1000 /usr/src/image/etc/rancher
+RUN mv /usr/src/image/libexec/k3os /usr/src/image/libexec/rke2os                                  \
+ && mv /usr/src/image/share/rancher/k3os /usr/src/image/share/rancher/rke2os                      \
+ && mv /usr/src/image/share/rancher/k3s /usr/src/image/share/rancher/rke2                         \
+ && mv /usr/src/image/etc/sysctl.d/00-k3os.conf /usr/src/image/etc/sysctl.d/00-rke2os.conf        \
+ && mv /usr/src/image/share/rancher/rke2/server/manifests/system-upgrade-plans/k3os-latest.yaml   \
+    /usr/src/image/share/rancher/rke2/server/manifests/system-upgrade-plans/rke2os-latest.yaml    \
+ && mv /usr/src/image/share/rancher/rke2os/scripts/k3os-upgrade-rootfs                            \
+    /usr/src/image/share/rancher/rke2os/scripts/rke2os-upgrade-rootfs                             \
+ && mv /usr/src/image/share/rancher/rke2os/scripts/k3os-upgrade-kernel                            \
+    /usr/src/image/share/rancher/rke2os/scripts/rke2os-upgrade-kernel
 
-COPY install.sh /usr/src/image/libexec/k3os/install
-RUN sed -i -e "s/%VERSION%/${VERSION}/g" -e "s/%ARCH%/${ARCH}/g" /usr/src/image/lib/os-release
-RUN mkdir -p /output && \
-    mksquashfs /usr/src/image /output/rootfs.squashfs
+
+RUN mkdir -p /usr/src/image/etc/rancher/rke2                              \
+ && ln -s /rke2os/system/rke2os/current/rke2os /usr/src/image/sbin/rke2os \
+ && ln -s /rke2os/system/rke2/current/rke2 /usr/src/image/sbin/rke2       \
+ && ln -s /var/lib/rancher/rke2/bin/kubectl /usr/src/image/sbin/kubectl   \
+ && ln -s /var/lib/rancher/rke2/bin/crictl /usr/src/image/sbin/crictl     \
+ && ln -s /var/lib/rancher/rke2/bin/ctr /usr/src/image/sbin/ctr           \
+ && chown -R 1000:1000 /usr/src/image/etc/rancher
+
+COPY install.sh /usr/src/image/libexec/rke2os/install
+RUN sed -i -e "s/%VERSION%/${VERSION}/g" -e "s/%ARCH%/${ARCH}/g" /usr/src/image/lib/os-release  \
+ && mkdir -p /output                                                                            \
+ && mksquashfs /usr/src/image /output/rootfs.squashfs

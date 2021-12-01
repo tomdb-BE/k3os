@@ -1,7 +1,7 @@
 
 variable "box_description" {
   type    = string
-  default = "k3OS is a Linux distribution designed to remove as much OS maintenance as possible in a Kubernetes cluster"
+  default = "rke2OS is a Linux distribution designed to remove as much OS maintenance as possible in a Kubernetes cluster"
 }
 
 variable "box_version" {
@@ -16,7 +16,7 @@ variable "iso_checksum" {
 
 variable "iso_url" {
   type    = string
-  default = "https://github.com/rancher/k3os/releases/download/v0.20.7-k3s1r0/k3os-amd64.iso"
+  default = "https://github.com/tomdb-be/rke2os/releases/download/v0.20.7-k3s1r0/rke2os-amd64.iso"
 }
 
 variable "password" {
@@ -24,10 +24,10 @@ variable "password" {
   default = "rancher"
 }
 
-source "qemu" "k3os" {
+source "qemu" "rke2os" {
   boot_command = [
     "rancher", "<enter>",
-    "sudo k3os install", "<enter>",
+    "sudo rke2os install", "<enter>",
     "1", "<enter>",
     "2", "<enter>", // avoid fd0
     "y", "<enter>",
@@ -50,10 +50,10 @@ source "qemu" "k3os" {
 }
 
 build {
-  sources = ["source.qemu.k3os"]
+  sources = ["source.qemu.rke2os"]
 
   post-processor "vagrant" {
-    output            = "k3os_{{.Provider}}.box"
+    output            = "rke2os_{{.Provider}}.box"
     provider_override = "libvirt"
   }
 }

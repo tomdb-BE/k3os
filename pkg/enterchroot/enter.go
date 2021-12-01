@@ -29,7 +29,7 @@ var (
 	DebugCmdline = ""
 )
 
-// Enter the k3OS root
+// Enter the rke2OS root
 func Enter() {
 	if os.Getenv("ENTER_DEBUG") == "true" {
 		logrus.SetLevel(logrus.DebugLevel)

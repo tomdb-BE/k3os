@@ -12,7 +12,7 @@ import (
 )
 
 func Run() error {
-	fmt.Println("\nRunning k3OS configuration")
+	fmt.Println("\nRunning rke2OS configuration")
 
 	cfg, err := config.ReadConfig()
 	if err != nil {
@@ -69,23 +69,23 @@ func runInstall(cfg config.CloudConfig) error {
 		return err
 	}
 
-	if !cfg.K3OS.Install.Silent {
+	if !cfg.RKE2OS.Install.Silent {
 		val, err := questions.PromptBool("\nConfiguration\n"+"-------------\n\n"+
 			string(installBytes)+
-			"\nYour disk will be formatted and k3OS will be installed with the above configuration.\nContinue?", false)
+			"\nYour disk will be formatted and rke2OS will be installed with the above configuration.\nContinue?", false)
 		if err != nil || !val {
 			return err
 		}
 	}
 
-	if cfg.K3OS.Install.ConfigURL == "" {
-		tempFile, err = ioutil.TempFile("/tmp", "k3os.XXXXXXXX")
+	if cfg.RKE2OS.Install.ConfigURL == "" {
+		tempFile, err = ioutil.TempFile("/tmp", "rke2os.XXXXXXXX")
 		if err != nil {
 			return err
 		}
 		defer tempFile.Close()
 
-		cfg.K3OS.Install.ConfigURL = tempFile.Name()
+		cfg.RKE2OS.Install.ConfigURL = tempFile.Name()
 	}
 
 	ev, err := config.ToEnv(cfg)
@@ -94,7 +94,7 @@ func runInstall(cfg config.CloudConfig) error {
 	}
 
 	if tempFile != nil {
-		cfg.K3OS.Install = nil
+		cfg.RKE2OS.Install = nil
 		bytes, err := yaml.Marshal(&cfg)
 		if err != nil {
 			return err
@@ -108,7 +108,7 @@ func runInstall(cfg config.CloudConfig) error {
 		defer os.Remove(tempFile.Name())
 	}
 
-	cmd := exec.Command("/usr/libexec/k3os/install")
+	cmd := exec.Command("/usr/libexec/rke2os/install")
 	cmd.Env = append(os.Environ(), ev...)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout

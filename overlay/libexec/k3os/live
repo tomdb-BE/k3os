@@ -3,14 +3,14 @@
 setup_motd()
 {
     echo >> /etc/motd
-    echo 'You can configure this system or install to disk using "sudo k3os install"' >> /etc/motd
+    echo 'You can configure this system or install to disk using "sudo rke2os install"' >> /etc/motd
 }
 
 setup_base()
 {
-    K3OS_ISO=$(blkid -L K3OS || true)
-    if [ -n "$K3OS_ISO" ]; then
-        mount -o ro $(blkid -L K3OS) /.base
+    RKE2OS_ISO=$(blkid -L RKE2OS || true)
+    if [ -n "$RKE2OS_ISO" ]; then
+        mount -o ro $(blkid -L RKE2OS) /.base
     else
         success=false
         for (( j=0; j < 5 ; j++ )); do

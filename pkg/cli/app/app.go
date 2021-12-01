@@ -19,8 +19,8 @@ var (
 // New CLI App
 func New() *cli.App {
 	app := cli.NewApp()
-	app.Name = "k3os"
-	app.Usage = "Booting to k3s so you don't have to"
+	app.Name = "rke2os"
+	app.Usage = "Booting to rke2 so you don't have to"
 	app.Version = version.Version
 	cli.VersionPrinter = func(c *cli.Context) {
 		fmt.Printf("%s version %s\n", app.Name, app.Version)
@@ -30,7 +30,7 @@ func New() *cli.App {
 		cli.BoolFlag{
 			Name:        "debug",
 			Usage:       "Turn on debug logs",
-			EnvVar:      "K3OS_DEBUG",
+			EnvVar:      "RKE2OS_DEBUG",
 			Destination: &Debug,
 		},
 	}

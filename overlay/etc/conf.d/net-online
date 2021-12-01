@@ -14,7 +14,7 @@ minimum_up=1
 
 # This setting is the host to attempt to ping if the above is yes.
 # The default is google.com.
-#ping_test_host=get.k3s.io
+#ping_test_host=github.com
 
 # The timeout setting controls how long the net-online service waits
 # for the network to be configured.

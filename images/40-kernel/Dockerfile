@@ -1,10 +1,10 @@
 ARG REPO
 ARG TAG
-FROM ${REPO}/k3os-bin:${TAG} as bin
+FROM ${REPO}/rke2os-bin:${TAG} as bin
 
-FROM ${REPO}/k3os-kernel-stage1:${TAG} as kernel
+FROM ${REPO}/rke2os-kernel-stage1:${TAG} as kernel
 
-FROM ${REPO}/k3os-base:${TAG}
+FROM ${REPO}/rke2os-base:${TAG}
 ARG TAG
 RUN apk add squashfs-tools
 COPY --from=kernel /output/ /usr/src/kernel/
@@ -22,12 +22,12 @@ RUN mkdir -p /output && \
 RUN cp /usr/src/kernel/version /output/ && \
     cp /usr/src/kernel/vmlinuz /output/
 
-COPY --from=bin /output/ /usr/src/k3os/
+COPY --from=bin /output/ /usr/src/rke2os/
 RUN cd /usr/src/initrd && \
-    mkdir -p k3os/system/k3os/${TAG} && \
-    cp /usr/src/k3os/k3os k3os/system/k3os/${TAG} && \
-    ln -s ${TAG} k3os/system/k3os/current && \
-    ln -s /k3os/system/k3os/current/k3os init
+    mkdir -p rke2os/system/rke2os/${TAG} && \
+    cp /usr/src/rke2os/rke2os rke2os/system/rke2os/${TAG} && \
+    ln -s ${TAG} rke2os/system/rke2os/current && \
+    ln -s /rke2os/system/rke2os/current/rke2os init
     
 RUN cd /usr/src/initrd && \
     find . | cpio -H newc -o | gzip -c -1 > /output/initrd

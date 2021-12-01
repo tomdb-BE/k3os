@@ -1,17 +1,17 @@
 #!/bin/bash
 set -e
 
-export SCRIPTS=/usr/libexec/k3os
-export K3OS_SYSTEM=/.base/k3os/system
+export SCRIPTS=/usr/libexec/rke2os
+export RKE2OS_SYSTEM=/.base/rke2os/system
 
 reinit_debug()
 {
-    if [ "$K3OS_DEBUG" = "true" ]; then
+    if [ "$RKE2OS_DEBUG" = "true" ]; then
         set -x
         return 0
     fi
 
-    if [ -e /run/k3os/debug ]; then
+    if [ -e /run/rke2os/debug ]; then
         set -x
         return 0
     fi
@@ -19,35 +19,35 @@ reinit_debug()
     if [ -e /proc/cmdline ]; then
         for x in $(cat /proc/cmdline); do
             case $x in
-                k3os.debug*)
-                    export K3OS_DEBUG=true
-                    mkdir -p /run/k3os
-                    echo debug > /run/k3os/debug || true
+                rke2os.debug*)
+                    export RKE2OS_DEBUG=true
+                    mkdir -p /run/rke2os
+                    echo debug > /run/rke2os/debug || true
                     ;;
             esac
         done
     fi
 
-    if [ "$K3OS_DEBUG" = "true" ]; then
+    if [ "$RKE2OS_DEBUG" = "true" ]; then
         set -x
     fi
 }
 
 setup_kernel()
 {
-    KERNEL=${K3OS_SYSTEM}/kernel/$(uname -r)/kernel.squashfs
+    KERNEL=${RKE2OS_SYSTEM}/kernel/$(uname -r)/kernel.squashfs
     if [ ! -e ${KERNEL} ]; then
         return 0
     fi
 
-    mkdir -p /run/k3os/kernel
-    mount -t squashfs $KERNEL /run/k3os/kernel
+    mkdir -p /run/rke2os/kernel
+    mount -t squashfs $KERNEL /run/rke2os/kernel
 
-    mount --bind /run/k3os/kernel/lib/modules /lib/modules
-    mount --bind /run/k3os/kernel/lib/firmware /lib/firmware
-    mount --bind /run/k3os/kernel/headers /usr/src
+    mount --bind /run/rke2os/kernel/lib/modules /lib/modules
+    mount --bind /run/rke2os/kernel/lib/firmware /lib/firmware
+    mount --bind /run/rke2os/kernel/headers /usr/src
 
-    umount /run/k3os/kernel
+    umount /run/rke2os/kernel
 }
 
 perr()
@@ -68,14 +68,14 @@ pinfo()
 
 cleanup()
 {
-    rm -rf /run/k3os
+    rm -rf /run/rke2os
     unset SCRIPTS
-    unset K3OS_SYSTEM
-    if [ -n "$K3OS_MODE" ]; then
-        mkdir -p /run/k3os
-        echo "$K3OS_MODE" > /run/k3os/mode
+    unset RKE2OS_SYSTEM
+    if [ -n "$RKE2OS_MODE" ]; then
+        mkdir -p /run/rke2os
+        echo "$RKE2OS_MODE" > /run/rke2os/mode
     fi
-    unset K3OS_MODE
+    unset RKE2OS_MODE
 }
 
 reinit_debug

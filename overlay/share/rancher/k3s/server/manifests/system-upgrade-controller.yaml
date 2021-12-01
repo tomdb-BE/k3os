@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: k3os-system
+  name: rke2os-system
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: k3os-upgrade
-  namespace: k3os-system
+  name: rke2os-upgrade
+  namespace: rke2os-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -19,14 +19,14 @@ roleRef:
   name: cluster-admin
 subjects:
   - kind: ServiceAccount
-    name: k3os-upgrade
-    namespace: k3os-system
+    name: rke2os-upgrade
+    namespace: rke2os-system
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: default-controller-env
-  namespace: k3os-system
+  namespace: rke2os-system
 data:
   SYSTEM_UPGRADE_CONTROLLER_DEBUG: "false"
   SYSTEM_UPGRADE_CONTROLLER_THREADS: "2"
@@ -42,7 +42,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: system-upgrade-controller
-  namespace: k3os-system
+  namespace: rke2os-system
 spec:
   selector:
     matchLabels:
@@ -63,7 +63,7 @@ spec:
               preference:
                 matchExpressions:
                   - { key: node-role.kubernetes.io/master, operator: Exists }
-      serviceAccountName: k3os-upgrade
+      serviceAccountName: rke2os-upgrade
       tolerations:
         - key: "CriticalAddonsOnly"
           operator: "Exists"

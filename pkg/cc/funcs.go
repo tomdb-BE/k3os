@@ -36,7 +36,7 @@ func ApplyHostname(cfg *config.CloudConfig) error {
 }
 
 func ApplyPassword(cfg *config.CloudConfig) error {
-	return command.SetPassword(cfg.K3OS.Password)
+	return command.SetPassword(cfg.RKE2OS.Password)
 }
 
 func ApplyRuncmd(cfg *config.CloudConfig) error {
@@ -87,16 +87,16 @@ func ApplyK3S(cfg *config.CloudConfig, restart, install bool) error {
 
 	k3sExists := false
 	k3sLocalExists := false
-	if _, err := os.Stat("/sbin/k3s"); err == nil {
+	if _, err := os.Stat("/sbin/rke2"); err == nil {
 		k3sExists = true
 	}
-	if _, err := os.Stat("/usr/local/bin/k3s"); err == nil {
+	if _, err := os.Stat("/usr/local/bin/rke2"); err == nil {
 		k3sLocalExists = true
 	}
 
-	args := cfg.K3OS.K3sArgs
+	args := cfg.RKE2OS.Rke2Args
 	vars := []string{
-		"INSTALL_K3S_NAME=service",
+		"INSTALL_RKE2_NAME=service",
 	}
 
 	if !k3sExists && !restart {
@@ -104,55 +104,55 @@ func ApplyK3S(cfg *config.CloudConfig, restart, install bool) error {
 	}
 
 	if k3sExists {
-		vars = append(vars, "INSTALL_K3S_SKIP_DOWNLOAD=true")
-		vars = append(vars, "INSTALL_K3S_BIN_DIR=/sbin")
-		vars = append(vars, "INSTALL_K3S_BIN_DIR_READ_ONLY=true")
+		vars = append(vars, "INSTALL_RKE2_SKIP_DOWNLOAD=true")
+		vars = append(vars, "INSTALL_RKE2_BIN_DIR=/sbin")
+		vars = append(vars, "INSTALL_RKE2_BIN_DIR_READ_ONLY=true")
 	} else if k3sLocalExists {
-		vars = append(vars, "INSTALL_K3S_SKIP_DOWNLOAD=true")
+		vars = append(vars, "INSTALL_RKE2_SKIP_DOWNLOAD=true")
 	} else if !install {
 		return nil
 	}
 
 	if !restart {
-		vars = append(vars, "INSTALL_K3S_SKIP_START=true")
+		vars = append(vars, "INSTALL_RKE2_SKIP_START=true")
 	}
 
-	if cfg.K3OS.ServerURL == "" {
+	if cfg.RKE2OS.ServerURL == "" {
 		if len(args) == 0 {
 			args = append(args, "server")
 		}
 	} else {
-		vars = append(vars, fmt.Sprintf("K3S_URL=%s", cfg.K3OS.ServerURL))
+		vars = append(vars, fmt.Sprintf("K3S_URL=%s", cfg.RKE2OS.ServerURL))
 		if len(args) == 0 {
 			args = append(args, "agent")
 		}
 	}
 
-	if strings.HasPrefix(cfg.K3OS.Token, "K10") {
-		vars = append(vars, fmt.Sprintf("K3S_TOKEN=%s", cfg.K3OS.Token))
-	} else if cfg.K3OS.Token != "" {
-		vars = append(vars, fmt.Sprintf("K3S_CLUSTER_SECRET=%s", cfg.K3OS.Token))
+	if strings.HasPrefix(cfg.RKE2OS.Token, "K10") {
+		vars = append(vars, fmt.Sprintf("K3S_TOKEN=%s", cfg.RKE2OS.Token))
+	} else if cfg.RKE2OS.Token != "" {
+		vars = append(vars, fmt.Sprintf("K3S_CLUSTER_SECRET=%s", cfg.RKE2OS.Token))
 	}
 
 	var labels []string
-	for k, v := range cfg.K3OS.Labels {
+	for k, v := range cfg.RKE2OS.Labels {
 		labels = append(labels, fmt.Sprintf("%s=%s", k, v))
 	}
 	if mode != "" {
-		labels = append(labels, fmt.Sprintf("k3os.io/mode=%s", mode))
+		labels = append(labels, fmt.Sprintf("rke2os.io/mode=%s", mode))
 	}
-	labels = append(labels, fmt.Sprintf("k3os.io/version=%s", version.Version))
+	labels = append(labels, fmt.Sprintf("rke2os.io/version=%s", version.Version))
 	sort.Strings(labels)
 
 	for _, l := range labels {
 		args = append(args, "--node-label", l)
 	}
 
-	for _, taint := range cfg.K3OS.Taints {
+	for _, taint := range cfg.RKE2OS.Taints {
 		args = append(args, "--kubelet-arg", "register-with-taints="+taint)
 	}
 
-	cmd := exec.Command("/usr/libexec/k3os/k3s-install.sh", args...)
+	cmd := exec.Command("/usr/libexec/rke2os/rke2-install.sh", args...)
 	cmd.Env = append(os.Environ(), vars...)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
@@ -171,7 +171,7 @@ func ApplyInstall(cfg *config.CloudConfig) error {
 		return nil
 	}
 
-	cmd := exec.Command("k3os", "install")
+	cmd := exec.Command("rke2os", "install")
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
@@ -183,8 +183,8 @@ func ApplyDNS(cfg *config.CloudConfig) error {
 	buf.WriteString("[General]\n")
 	buf.WriteString("NetworkInterfaceBlacklist=veth\n")
 	buf.WriteString("PreferredTechnologies=ethernet,wifi\n")
-	if len(cfg.K3OS.DNSNameservers) > 0 {
-		dns := strings.Join(cfg.K3OS.DNSNameservers, ",")
+	if len(cfg.RKE2OS.DNSNameservers) > 0 {
+		dns := strings.Join(cfg.RKE2OS.DNSNameservers, ",")
 		buf.WriteString("FallbackNameservers=")
 		buf.WriteString(dns)
 		buf.WriteString("\n")
@@ -192,8 +192,8 @@ func ApplyDNS(cfg *config.CloudConfig) error {
 		buf.WriteString("FallbackNameservers=8.8.8.8\n")
 	}
 
-	if len(cfg.K3OS.NTPServers) > 0 {
-		ntp := strings.Join(cfg.K3OS.NTPServers, ",")
+	if len(cfg.RKE2OS.NTPServers) > 0 {
+		ntp := strings.Join(cfg.RKE2OS.NTPServers, ",")
 		buf.WriteString("FallbackTimeservers=")
 		buf.WriteString(ntp)
 		buf.WriteString("\n")
@@ -208,7 +208,7 @@ func ApplyDNS(cfg *config.CloudConfig) error {
 }
 
 func ApplyWifi(cfg *config.CloudConfig) error {
-	if len(cfg.K3OS.Wifi) == 0 {
+	if len(cfg.RKE2OS.Wifi) == 0 {
 		return nil
 	}
 
@@ -233,7 +233,7 @@ func ApplyWifi(cfg *config.CloudConfig) error {
 	buf.WriteString("Name=cloud-config\n")
 	buf.WriteString("Description=Services defined in the cloud-config\n")
 
-	for i, w := range cfg.K3OS.Wifi {
+	for i, w := range cfg.RKE2OS.Wifi {
 		name := fmt.Sprintf("wifi%d", i)
 		buf.WriteString("[service_")
 		buf.WriteString(name)
@@ -255,11 +255,11 @@ func ApplyWifi(cfg *config.CloudConfig) error {
 }
 
 func ApplyDataSource(cfg *config.CloudConfig) error {
-	if len(cfg.K3OS.DataSources) == 0 {
+	if len(cfg.RKE2OS.DataSources) == 0 {
 		return nil
 	}
 
-	args := strings.Join(cfg.K3OS.DataSources, " ")
+	args := strings.Join(cfg.RKE2OS.DataSources, " ")
 	buf := &bytes.Buffer{}
 
 	buf.WriteString("command_args=\"")
@@ -274,10 +274,10 @@ func ApplyDataSource(cfg *config.CloudConfig) error {
 }
 
 func ApplyEnvironment(cfg *config.CloudConfig) error {
-	if len(cfg.K3OS.Environment) == 0 {
+	if len(cfg.RKE2OS.Environment) == 0 {
 		return nil
 	}
-	env := make(map[string]string, len(cfg.K3OS.Environment))
+	env := make(map[string]string, len(cfg.RKE2OS.Environment))
 	if buf, err := ioutil.ReadFile("/etc/environment"); err == nil {
 		scanner := bufio.NewScanner(bytes.NewReader(buf))
 		for scanner.Scan() {
@@ -301,7 +301,7 @@ func ApplyEnvironment(cfg *config.CloudConfig) error {
 			}
 		}
 	}
-	for key, val := range cfg.K3OS.Environment {
+	for key, val := range cfg.RKE2OS.Environment {
 		env[key] = val
 	}
 	buf := &bytes.Buffer{}

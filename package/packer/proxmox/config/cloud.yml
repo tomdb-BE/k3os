@@ -19,6 +19,6 @@ write_files:
     owner: root
     permissions: '0644'
 
-k3os:
+rke2os:
   datasource: cdrom
   password: YourSSHPasswordReplaceIt

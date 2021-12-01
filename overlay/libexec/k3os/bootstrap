@@ -28,23 +28,23 @@ setup_users()
     addgroup -g 1000 rancher
     adduser -s /bin/bash -u 1000 -D -G rancher rancher
     mkdir -p /home/rancher/.kube
-    ln -sf /etc/rancher/k3s/k3s.yaml /home/rancher/.kube/config
+    ln -sf /etc/rancher/rke2/rke2.yaml /home/rancher/.kube/config
     chown -R 1000:1000 /home/rancher/.kube
     echo 'rancher:*' | chpasswd -e
 }
 
 setup_dirs()
 {
-    mkdir -p /run/k3os
+    mkdir -p /run/rke2os
 }
 
 setup_config()
 {
-    if [ "$K3OS_MODE" = "local" ]; then
+    if [ "$RKE2OS_MODE" = "local" ]; then
         return 0
     fi
 
-    $K3OS_SYSTEM/k3os/current/k3os config --initrd
+    $RKE2OS_SYSTEM/rke2os/current/rke2os config --initrd
 }
 
 setup_etc
@@ -53,7 +53,7 @@ setup_etc
 
 setup_modules
 setup_users
-$K3OS_SYSTEM/k3os/current/k3os rc
+$RKE2OS_SYSTEM/rke2os/current/rke2os rc
 setup_dirs
 setup_kernel
 setup_config
