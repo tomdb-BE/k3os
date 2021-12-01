@@ -13,8 +13,6 @@ ARG REPO
 ARG TAG
 FROM ${REPO}/k3os-k3s:${TAG} as k3s
 
-FROM ${REPO}/rke2-runtime:${RKE2_VERSION}-linux-${ARCH} AS runtime
-
 FROM base as k3os-build
 ARG VERSION
 ARG ARCH
