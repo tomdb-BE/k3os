@@ -122,16 +122,16 @@ func ApplyK3S(cfg *config.CloudConfig, restart, install bool) error {
 			args = append(args, "server")
 		}
 	} else {
-		vars = append(vars, fmt.Sprintf("K3S_URL=%s", cfg.RKE2OS.ServerURL))
+		vars = append(vars, fmt.Sprintf("RKE2_URL=%s", cfg.RKE2OS.ServerURL))
 		if len(args) == 0 {
 			args = append(args, "agent")
 		}
 	}
 
 	if strings.HasPrefix(cfg.RKE2OS.Token, "K10") {
-		vars = append(vars, fmt.Sprintf("K3S_TOKEN=%s", cfg.RKE2OS.Token))
+		vars = append(vars, fmt.Sprintf("RKE2_TOKEN=%s", cfg.RKE2OS.Token))
 	} else if cfg.RKE2OS.Token != "" {
-		vars = append(vars, fmt.Sprintf("K3S_CLUSTER_SECRET=%s", cfg.RKE2OS.Token))
+		vars = append(vars, fmt.Sprintf("RKE2_CLUSTER_SECRET=%s", cfg.RKE2OS.Token))
 	}
 
 	var labels []string
