@@ -104,9 +104,7 @@ func ApplyK3S(cfg *config.CloudConfig, restart, install bool) error {
 	}
 
 	if k3sExists {
-		vars = append(vars, "INSTALL_RKE2_SKIP_DOWNLOAD=true")
-		vars = append(vars, "INSTALL_RKE2_BIN_DIR=/sbin")
-		vars = append(vars, "INSTALL_RKE2_BIN_DIR_READ_ONLY=true")
+		vars = append(vars, "INSTALL_RKE2_TAR_PREFIX=/sbin")
 	} else if k3sLocalExists {
 		vars = append(vars, "INSTALL_RKE2_SKIP_DOWNLOAD=true")
 	} else if !install {

@@ -78,10 +78,13 @@ RUN rm -rf \
     /usr/src/image/usr/share/vim/vim81/tutor \
     /usr/src/image/usr/share/vim/vim81/doc
 
+COPY --from=rke2 /output/install.sh /usr/src/image/libexec/rke2os/rke2-install.sh
+COPY --from=progs /output/metadata /usr/src/image/sbin/metadata
+COPY --from=progs /output/kubectx/kubectx /output/kubectx/kubens /usr/src/image/bin/
+
 COPY overlay/ /usr/src/image/
 
-RUN mv /usr/src/image/etc/conf.d/k3s-service /usr/src/image/etc/conf.d/rke2-service               \
- && mv /usr/src/image/libexec/k3os /usr/src/image/libexec/rke2os                                  \
+RUN mv /usr/src/image/libexec/k3os /usr/src/image/libexec/rke2os                                  \
  && mv /usr/src/image/share/rancher/k3os /usr/src/image/share/rancher/rke2os                      \
  && mv /usr/src/image/share/rancher/k3s /usr/src/image/share/rancher/rke2                         \
  && mv /usr/src/image/etc/sysctl.d/00-k3os.conf /usr/src/image/etc/sysctl.d/00-rke2os.conf        \
@@ -92,9 +95,6 @@ RUN mv /usr/src/image/etc/conf.d/k3s-service /usr/src/image/etc/conf.d/rke2-serv
  && mv /usr/src/image/share/rancher/rke2os/scripts/k3os-upgrade-kernel                            \
     /usr/src/image/share/rancher/rke2os/scripts/rke2os-upgrade-kernel
 
-COPY --from=rke2 /output/rke2-install.sh /usr/src/image/libexec/rke2os/rke2-install.sh
-COPY --from=progs /output/metadata /usr/src/image/sbin/metadata
-COPY --from=progs /output/kubectx/kubectx /output/kubectx/kubens /usr/src/image/bin/
 
 RUN mkdir -p /usr/src/image/etc/rancher/rke2                              \
  && ln -s /rke2os/system/rke2os/current/rke2os /usr/src/image/sbin/rke2os \
