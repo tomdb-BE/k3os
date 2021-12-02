@@ -55,18 +55,27 @@ setup_openrc_envs() {
     if [ -n "${INSTALL_RKE2_NAME}" ]; then
         SYSTEM_NAME=rke2-${INSTALL_RKE2_NAME}
     else
-        if [ "${CMD_RKE2}" = server ]; then
-            SYSTEM_NAME=rke2
-        else
-            SYSTEM_NAME=rke2-${CMD_RKE2}
-        fi
+        SYSTEM_NAME=rke2-service
     fi
+
+    SERVICE_RKE2=${SYSTEM_NAME}.service
+    KILLALL_RKE2_SH=${KILLALL_RKE2_SH:-${BIN_DIR}/rke2-killall.sh}
     FILE_RKE2_SERVICE=/etc/init.d/${SYSTEM_NAME}
     FILE_RKE2_ENV=/etc/rancher/rke2/${SYSTEM_NAME}.env
 }
 
 get_installed_hashes() {
     $SUDO sha256sum ${BIN_DIR}/rke2 ${FILE_RKE2_SERVICE} ${FILE_RKE2_ENV} 2>&1 || true
+}
+
+# --- capture current env and create file containing rke2_ variables ---
+create_env_file() {
+    info "env: Creating environment file ${FILE_RKE2_ENV}"
+    $SUDO mkdir -p /etc/rancher/rke2
+    $SUDO touch ${FILE_RKE2_ENV}
+    $SUDO chmod 0600 ${FILE_RKE2_ENV}
+    sh -c export | while read x v; do echo $v; done | grep -E '^(RKE2|CONTAINERD)_' | $SUDO tee ${FILE_RKE2_ENV} >/dev/null
+    sh -c export | while read x v; do echo $v; done | grep -Ei '^(NO|HTTP|HTTPS)_PROXY' | $SUDO tee -a ${FILE_RKE2_ENV} >/dev/null
 }
 
 # --- write openrc service file ---
@@ -157,6 +166,7 @@ if [ "${INSTALL_RKE2_SKIP_DOWNLOAD}" != true ]; then
     do_install
     do_rke2os_cleanup
 fi
+create_env_file
 create_openrc_service_file
 service_enable_and_start
 exit 0
