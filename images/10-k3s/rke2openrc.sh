@@ -1,3 +1,29 @@
+
+# --- add quotes to command arguments ---
+quote() {
+    for arg in "$@"; do
+        printf '%s\n' "$arg" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/"
+    done
+}
+
+# --- add indentation and trailing slash to quoted args ---
+quote_indent() {
+    printf ' \\\n'
+    for arg in "$@"; do
+        printf '\t%s \\\n' "$(quote "$arg")"
+    done
+}
+
+# --- escape most punctuation characters, except quotes, forward slash, and space ---
+escape() {
+    printf '%s' "$@" | sed -e 's/\([][!#$%&()*;<=>?\_`{|}]\)/\\\1/g;'
+}
+
+# --- escape double quotes ---
+escape_dq() {
+    printf '%s' "$@" | sed -e 's/"/\\"/g'
+}
+
 # --- set envs for openrc service install ---
 setup_openrc_envs() {
     SYSTEM_NAME=rke2-service
@@ -84,11 +110,11 @@ EOF
 # --- cleanup installed files for rke2os install  ---
 do_rke2os_cleanup () {
     mv ${INSTALL_RKE2_TAR_PREFIX}/bin/* ${INSTALL_RKE2_TAR_PREFIX}/
-    rm -r ${INSTALL_RKE2_TAR_PREFIX}/bin ${INSTALL_RKE2_TAR_PREFIX}/lib ${INSTALL_RKE2_TAR_PREFIX}/share
+    rm -r ${INSTALL_RKE2_TAR_PREFIX}/bin ${INSTALL_RKE2_TAR_PREFIX}/lib ${INSTALL_RKE2_TAR_PREFIX}/share ${INSTALL_RKE2_TAR_PREFIX}/*.ps1
 }
 
 # --- re-evaluate args to include env command ---
-eval set -- $(escape "${INSTALL_RKE2_EXEC}") $(quote "$@")
+eval set -- $(escape "${INSTALL_K3S_EXEC}") $(quote "$@")
 
 # --- run the service install process --
 {
