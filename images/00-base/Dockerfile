@@ -1,6 +1,5 @@
 ### BASE ###
 FROM alpine:3.14 as base
-ARG ARCH
 RUN apk --no-cache add \
     bash \
     bash-completion \

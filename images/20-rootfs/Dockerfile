@@ -3,7 +3,7 @@ ARG TAG
 
 FROM ${REPO}/rke2os-base:${TAG} as base
 FROM ${REPO}/rke2os-progs:${TAG} as progs
-FROM ${REPO}/rke2os-k3s:${TAG} as rke2
+FROM ${REPO}/rke2os-rke2:${TAG} as rke2
 
 FROM base as rke2os-build
 ARG VERSION
@@ -83,8 +83,10 @@ COPY --from=progs /output/metadata /usr/src/image/sbin/metadata
 COPY --from=progs /output/kubectx/kubectx /output/kubectx/kubens /usr/src/image/bin/
 
 COPY overlay/ /usr/src/image/
+COPY install.sh /usr/src/image/libexec/rke2os/install
 
-RUN mv /usr/src/image/libexec/k3os /usr/src/image/libexec/rke2os                                  \
+RUN mv /usr/src/image/libexec/k3os/* /usr/src/image/libexec/rke2os/                               \
+ && rm -rf /usr/src/image/libexec/k3os                                                            \
  && mv /usr/src/image/share/rancher/k3os /usr/src/image/share/rancher/rke2os                      \
  && mv /usr/src/image/share/rancher/k3s /usr/src/image/share/rancher/rke2                         \
  && mv /usr/src/image/etc/sysctl.d/00-k3os.conf /usr/src/image/etc/sysctl.d/00-rke2os.conf        \
@@ -104,7 +106,6 @@ RUN mkdir -p /usr/src/image/etc/rancher/rke2                              \
  && ln -s /var/lib/rancher/rke2/bin/ctr /usr/src/image/sbin/ctr           \
  && chown -R 1000:1000 /usr/src/image/etc/rancher
 
-COPY install.sh /usr/src/image/libexec/rke2os/install
 RUN sed -i -e "s/%VERSION%/${VERSION}/g" -e "s/%ARCH%/${ARCH}/g" /usr/src/image/lib/os-release  \
  && mkdir -p /output                                                                            \
  && mksquashfs /usr/src/image /output/rootfs.squashfs

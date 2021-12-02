@@ -1,11 +1,8 @@
 ARG REPO
 ARG TAG
-FROM ${REPO}/rke2os-kernel:${TAG} as kernel
 
-ARG REPO
-ARG TAG
+FROM ${REPO}/rke2os-kernel:${TAG} as kernel
 FROM ${REPO}/rke2os-package:${TAG}
-ARG VERSION
 
 COPY --from=kernel /output/ /output/rke2os/system/kernel/
 

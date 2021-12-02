@@ -1,6 +1,6 @@
 ARG REPO
 ARG TAG
-ARG VERSION
+
 FROM ${REPO}/rke2os-gobuild:${TAG} as gobuild
 
 ENV LINUXKIT v0.8

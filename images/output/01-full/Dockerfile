@@ -1,17 +1,8 @@
 ARG REPO
 ARG TAG
 FROM ${REPO}/rke2os-tar:${TAG} as tar
-
-ARG REPO
-ARG TAG
 FROM ${REPO}/rke2os-iso:${TAG} as iso
-
-ARG REPO
-ARG TAG
 FROM ${REPO}/rke2os-kernel:${TAG} as kernel
-
-ARG REPO
-ARG TAG
 FROM ${REPO}/rke2os-base:${TAG}
 ARG ARCH
 

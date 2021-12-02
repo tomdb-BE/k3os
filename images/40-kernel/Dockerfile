@@ -1,9 +1,8 @@
 ARG REPO
 ARG TAG
+
 FROM ${REPO}/rke2os-bin:${TAG} as bin
-
 FROM ${REPO}/rke2os-kernel-stage1:${TAG} as kernel
-
 FROM ${REPO}/rke2os-base:${TAG}
 ARG TAG
 RUN apk add squashfs-tools

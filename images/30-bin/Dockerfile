@@ -1,13 +1,8 @@
 ARG REPO
 ARG TAG
+
 FROM ${REPO}/rke2os-rootfs:${TAG} as rootfs
-
-ARG REPO
-ARG TAG
 FROM ${REPO}/rke2os-progs:${TAG} as progs
-
-ARG REPO
-ARG TAG
 FROM ${REPO}/rke2os-base:${TAG}
 
 COPY --from=rootfs /output/rootfs.squashfs /usr/src/

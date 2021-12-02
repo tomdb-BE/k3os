@@ -1,11 +1,8 @@
 ARG REPO
 ARG TAG
-FROM ${REPO}/rke2os-package:${TAG} as package
 
-ARG REPO
-ARG TAG
+FROM ${REPO}/rke2os-package:${TAG} as package
 FROM ${REPO}/rke2os-base:${TAG} as base
-ARG VERSION
 ARG ARCH
 RUN apk add xorriso grub grub-efi mtools libvirt qemu-img
 RUN if [ "$ARCH" == "amd64" ]; then \

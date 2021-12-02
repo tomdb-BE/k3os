@@ -1,5 +1,3 @@
-ARG REPO
-ARG TAG
 FROM ubuntu:focal
 
 RUN apt-get --assume-yes update \

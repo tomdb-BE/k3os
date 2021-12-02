@@ -1,13 +1,8 @@
 ARG REPO
 ARG TAG
-FROM ${REPO}/rke2os-k3s:${TAG} as rke2
 
-ARG REPO
-ARG TAG
+FROM ${REPO}/rke2os-rke2:${TAG} as rke2
 FROM ${REPO}/rke2os-bin:${TAG} as bin
-
-ARG REPO
-ARG TAG
 FROM ${REPO}/rke2os-base:${TAG} as base
 ARG VERSION
 
