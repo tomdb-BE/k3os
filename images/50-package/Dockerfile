@@ -17,7 +17,7 @@ COPY --from=bin /output/  /output/rke2os/system/rke2os/${VERSION}/
 WORKDIR /output/rke2os/system/rke2
 RUN mkdir -vp $(cat version) /output/sbin
 RUN ln -sf $(cat version) current
-RUN mv -vf rke2-install.sh current/
+RUN mv -vf install.sh current/rke2-install.sh
 RUN mv -vf rke2-killall.sh current/
 RUN mv -vf rke2 current/
 RUN rm -vf version *.sh
