@@ -26,7 +26,7 @@ escape_dq() {
 
 # --- set envs for openrc service install ---
 setup_openrc_envs() {
-    BIN_DIR=/sbin}
+    BIN_DIR=/sbin
     SUDO=sudo
     if [ $(id -u) -eq 0 ]; then
         SUDO=
@@ -152,10 +152,11 @@ eval set -- $(escape "${INSTALL_RKE2_EXEC}") $(quote "$@")
 # --- run the service install process --
 {
 setup_openrc_envs "$@"
-[ "${INSTALL_RKE2_SKIP_DOWNLOAD}" = true ] && exit 0
 PRE_INSTALL_HASHES=$(get_installed_hashes)
-do_install
-do_rke2os_cleanup
+if [ "${INSTALL_RKE2_SKIP_DOWNLOAD}" != true ]; then
+    do_install
+    do_rke2os_cleanup
+fi
 create_openrc_service_file
 service_enable_and_start
 exit 0
