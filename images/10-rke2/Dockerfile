@@ -10,6 +10,7 @@ ENV ARCH=${ARCH}                         \
     GITREPO=${GITREPO}                   \
     INSTALL_RKE2_VERSION=${RKE2_VERSION} \
     INSTALL_RKE2_NAME=service            \
+    INSTALL_RKE2_SKIP_START=true         \
     INSTALL_RKE2_TAR_PREFIX=/output
 ADD ./rke2openrc.sh ./
 RUN mkdir /output                                                                                \

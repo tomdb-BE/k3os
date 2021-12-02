@@ -26,7 +26,7 @@ escape_dq() {
 
 # --- set envs for openrc service install ---
 setup_openrc_envs() {
-    BIN_DIR=${INSTALL_RKE2_TAR_PREFIX:-"/sbin"}
+    BIN_DIR=/sbin}
     SUDO=sudo
     if [ $(id -u) -eq 0 ]; then
         SUDO=
@@ -130,6 +130,12 @@ service_enable_and_start() {
     [ "${INSTALL_RKE2_SKIP_ENABLE}" = true ] && return
     openrc_enable
     [ "${INSTALL_RKE2_SKIP_START}" = true ] && return
+
+    POST_INSTALL_HASHES=$(get_installed_hashes)
+    if [ "${PRE_INSTALL_HASHES}" = "${POST_INSTALL_HASHES}" ] && [ "${INSTALL_K3S_FORCE_RESTART}" != true ]; then
+        info 'No change detected so skipping service start'
+        return
+    fi
     openrc_start
     return 0
 }
@@ -146,11 +152,11 @@ eval set -- $(escape "${INSTALL_RKE2_EXEC}") $(quote "$@")
 # --- run the service install process --
 {
 setup_openrc_envs "$@"
+[ "${INSTALL_RKE2_SKIP_DOWNLOAD}" = true ] && exit 0
+PRE_INSTALL_HASHES=$(get_installed_hashes)
+do_install
+do_rke2os_cleanup
 create_openrc_service_file
-if [ "${INSTALL_RKE2_SKIP_DOWNLOAD}" != true ]; then
-    do_install
-    do_rke2os_cleanup
-fi
-service_enable_and_start()
+service_enable_and_start
 exit 0
 }
