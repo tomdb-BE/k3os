@@ -151,6 +151,6 @@ if [ "${INSTALL_RKE2_SKIP_DOWNLOAD}" != true ]; then
     do_install
     do_rke2os_cleanup
 fi
-service_enable_and_start()
+service_enable_and_start
 exit 0
 }
