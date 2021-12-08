@@ -151,6 +151,8 @@ service_enable_and_start() {
 
 # --- cleanup installed files for rke2os install  ---
 do_rke2os_cleanup () {
+    sed -i 's/systemctl\ stop\ rke2-server\.service.*/service\ rke2-service\ stop/g' ${INSTALL_RKE2_TAR_PREFIX}/bin/rke2-killall.sh
+    sed -i '/systemctl\ stop\ rke2-agent\.service.*/d' ${INSTALL_RKE2_TAR_PREFIX}/bin/rke2-killall.sh 
     mv ${INSTALL_RKE2_TAR_PREFIX}/bin/* ${INSTALL_RKE2_TAR_PREFIX}/
     rm -r ${INSTALL_RKE2_TAR_PREFIX}/bin ${INSTALL_RKE2_TAR_PREFIX}/lib ${INSTALL_RKE2_TAR_PREFIX}/share ${INSTALL_RKE2_TAR_PREFIX}/*.ps1
 }
