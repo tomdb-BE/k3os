@@ -1,5 +1,5 @@
 ARG REPO
 ARG TAG
 FROM ${REPO}/rke2os-base:${TAG} AS base
-RUN apk --no-cache add \
+RUN apt-get install -y --no-install-recommends \
     virt-what

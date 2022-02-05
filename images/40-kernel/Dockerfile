@@ -5,7 +5,7 @@ FROM ${REPO}/rke2os-bin:${TAG} as bin
 FROM ${REPO}/rke2os-kernel-stage1:${TAG} as kernel
 FROM ${REPO}/rke2os-base:${TAG}
 ARG TAG
-RUN apk add squashfs-tools
+RUN apt-get install -y --no-install-recommends squashfs-tools
 COPY --from=kernel /output/ /usr/src/kernel/
 
 RUN mkdir -p /usr/src/initrd/lib && \

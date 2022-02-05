@@ -8,7 +8,7 @@ FROM ${REPO}/rke2os-rke2:${TAG} as rke2
 FROM base as rke2os-build
 ARG VERSION
 ARG ARCH
-RUN apk add squashfs-tools
+RUN apt-get install -y --no-install-recommends squashfs-tools
 COPY --from=base /bin /usr/src/image/bin/
 COPY --from=base /lib /usr/src/image/lib/
 COPY --from=base /sbin /usr/src/image/sbin/
@@ -62,22 +62,36 @@ RUN rm -rf \
     /usr/src/image/etc/os-release \
  && ln -s /usr/lib/os-release /usr/src/image/etc/os-release
 
-RUN rm -rf \
-    /usr/src/image/sbin/apk \
-    /usr/src/image/usr/include \
-    /usr/src/image/usr/lib/apk \
-    /usr/src/image/usr/lib/pkgconfig \
-    /usr/src/image/usr/lib/systemd \
-    /usr/src/image/usr/lib/udev \
-    /usr/src/image/usr/share/apk \
-    /usr/src/image/usr/share/applications \
-    /usr/src/image/usr/share/ca-certificates \
-    /usr/src/image/usr/share/icons \
-    /usr/src/image/usr/share/mkinitfs \
-    /usr/src/image/usr/share/vim/vim81/spell \
-    /usr/src/image/usr/share/vim/vim81/tutor \
-    /usr/src/image/usr/share/vim/vim81/doc
-
+RUN rm -r \
+    /usr/src/image/bin/apt* \
+    /usr/src/image/bin/debconf-apt* \
+    /usr/src/image/etc/apt \
+    /usr/src/image/etc/dpkg/dpkg.cfg.d/docker-apt-speedup \
+    /usr/src/image/etc/kernel/postinst.d/apt-auto-removal \
+    /usr/src/image/etc/cron.daily/apt-compat \
+    /usr/src/image/etc/logrotate.d/apt \
+    /usr/src/image/lib/x86_64-linux-gnu/libapt-* \
+    /usr/src/image/lib/dpkg/methods/apt \
+    /usr/src/image/lib/apt \
+    /usr/src/image/share/doc/apt \
+    /usr/src/image/share/doc/libapt* \
+    /usr/src/image/share/vim/vim82/syntax/aptconf.vim \
+    /usr/src/image/share/bash-completion/completions/apt* \
+    /usr/src/image/share/bash-completion/completions/slapt* \
+    /usr/src/image/share/bug/apt \
+    /usr/src/image/lib/systemd \
+    /usr/src/image/etc/systemd \
+    /usr/src/image/bin/systemd-* \
+    /usr/src/image/bin/deb-systemd-* \
+    /usr/src/image/share/doc/libsystemd0 \
+    /usr/src/image/games \
+    /usr/src/image/lib/udev \
+    /usr/src/image/share/applications \
+    /usr/src/image/share/ca-certificates \
+    /usr/src/image/share/icons \
+    /usr/src/image/share/vim/vim82/spell \
+    /usr/src/image/share/vim/vim82/tutor \
+    /usr/src/image/share/vim/vim82/doc
 COPY --from=rke2 /output/install.sh /usr/src/image/libexec/rke2os/rke2-install.sh
 COPY --from=progs /output/metadata /usr/src/image/sbin/metadata
 COPY --from=progs /output/kubectx/kubectx /output/kubectx/kubens /usr/src/image/bin/

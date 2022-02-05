@@ -1,4 +1,4 @@
-FROM ubuntu:focal
+FROM ubuntu:impish
 
 RUN apt-get --assume-yes update \
  && apt-get --assume-yes install \

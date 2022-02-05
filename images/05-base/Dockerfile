@@ -1,10 +1,6 @@
 ARG REPO
 ARG TAG
 FROM ${REPO}/rke2os-base:${TAG} AS base
-RUN apk --no-cache add \
-    grub-bios \
-    open-vm-tools \
-    open-vm-tools-deploypkg \
-    open-vm-tools-guestinfo \
-    open-vm-tools-static \
-    open-vm-tools-vmbackup
+RUN apt-get install -y --no-install-recommends \
+    grub-pc \
+    open-vm-tools
