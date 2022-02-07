@@ -23,5 +23,6 @@ RUN mkdir /output                                                               
  && head -n -2 install.sh > /output/install.sh                                                                              \
  && cat rke2openrc.sh >> /output/install.sh                                                                                 \
  && chmod +x /output/install.sh                                                                                             \
- && output/install.sh                                                                                                       \
+ && /output/install.sh                                                                                                      \
+ && rm -f /output/rke2.exe                                                                                                  \
  && echo "${RKE2_VERSION}" > /output/version

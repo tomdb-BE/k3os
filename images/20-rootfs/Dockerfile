@@ -50,6 +50,7 @@ RUN rm -rf /usr/src/image/local \
 
 # setup /usr/libexec/kubernetes
 RUN rm -rf /usr/libexec/kubernetes \
+ && mkdir /usr/src/image/libexec \
  && ln -s /var/lib/rancher/rke2/agent/libexec/kubernetes /usr/src/image/libexec/kubernetes
 
 # cleanup files hostname/hosts
@@ -75,7 +76,6 @@ RUN rm -r \
     /usr/src/image/lib/apt \
     /usr/src/image/share/doc/apt \
     /usr/src/image/share/doc/libapt* \
-    /usr/src/image/share/vim/vim82/syntax/aptconf.vim \
     /usr/src/image/share/bash-completion/completions/apt* \
     /usr/src/image/share/bash-completion/completions/slapt* \
     /usr/src/image/share/bug/apt \
@@ -89,9 +89,10 @@ RUN rm -r \
     /usr/src/image/share/applications \
     /usr/src/image/share/ca-certificates \
     /usr/src/image/share/icons \
-    /usr/src/image/share/vim/vim82/spell \
-    /usr/src/image/share/vim/vim82/tutor \
-    /usr/src/image/share/vim/vim82/doc
+    /usr/src/image/share/vim/vim81/syntax/aptconf.vim \
+    /usr/src/image/share/vim/vim81/spell \
+    /usr/src/image/share/vim/vim81/tutor \
+    /usr/src/image/share/vim/vim81/doc
 COPY --from=rke2 /output/install.sh /usr/src/image/libexec/rke2os/rke2-install.sh
 COPY --from=progs /output/metadata /usr/src/image/sbin/metadata
 COPY --from=progs /output/kubectx/kubectx /output/kubectx/kubens /usr/src/image/bin/
