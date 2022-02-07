@@ -100,9 +100,7 @@ COPY --from=progs /output/kubectx/kubectx /output/kubectx/kubens /usr/src/image/
 COPY overlay/ /usr/src/image/
 COPY install.sh /usr/src/image/libexec/rke2os/install
 
-RUN mv /usr/src/image/libexec/k3os/* /usr/src/image/libexec/rke2os/                               \
- && rm -rf /usr/src/image/libexec/k3os                                                            \
- && mv /usr/src/image/share/rancher/k3os /usr/src/image/share/rancher/rke2os                      \
+RUN mv /usr/src/image/libexec/k3os /usr/src/image/libexec/rke2os/                                 \
  && mv /usr/src/image/share/rancher/k3s /usr/src/image/share/rancher/rke2                         \
  && mv /usr/src/image/etc/sysctl.d/00-k3os.conf /usr/src/image/etc/sysctl.d/00-rke2os.conf        \
  && mv /usr/src/image/share/rancher/rke2/server/manifests/system-upgrade-plans/k3os-latest.yaml   \
