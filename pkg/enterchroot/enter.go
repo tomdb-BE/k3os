@@ -25,7 +25,7 @@ const (
 )
 
 var (
-	symlinks     = []string{"lib", "bin", "sbin"}
+	symlinks     = []string{"lib", "bin", "sbin", "lib64", "lib32", "libx32"}
 	DebugCmdline = ""
 )
 

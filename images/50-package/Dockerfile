@@ -17,7 +17,6 @@ RUN mv -vf rke2-killall.sh current/
 RUN mv -vf rke2 current/
 RUN rm -vf version *.sh
 RUN ln -sf /rke2os/system/rke2/current/rke2 /output/sbin/rke2
-
 WORKDIR /output/rke2os/system/rke2os
 RUN ln -sf ${VERSION} current
 RUN ln -sf /rke2os/system/rke2os/current/rke2os /output/sbin/rke2os

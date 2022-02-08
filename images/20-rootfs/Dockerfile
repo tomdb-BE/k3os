@@ -35,6 +35,7 @@ RUN chmod +s /usr/src/image/bin/sudo
 
 # Add empty dirs to bind mount
 RUN mkdir -p /usr/src/image/lib/modules
+RUN mkdir -p /usr/src/image/lib/firmware
 RUN mkdir -p /usr/src/image/src
 
 # setup /etc/ssl
@@ -52,6 +53,12 @@ RUN rm -rf /usr/src/image/local \
 RUN rm -rf /usr/libexec/kubernetes \
  && mkdir /usr/src/image/libexec \
  && ln -s /var/lib/rancher/rke2/agent/libexec/kubernetes /usr/src/image/libexec/kubernetes
+
+# setup mdev
+RUN ln -sf /usr/bin/busybox /usr/src/image/sbin/mdev
+
+# setup init
+RUN ln -sf /usr/bin/busybox /usr/src/image/sbin/init
 
 # cleanup files hostname/hosts
 RUN rm -rf \
@@ -93,15 +100,14 @@ RUN rm -r \
     /usr/src/image/share/vim/vim81/spell \
     /usr/src/image/share/vim/vim81/tutor \
     /usr/src/image/share/vim/vim81/doc
-COPY --from=rke2 /output/install.sh /usr/src/image/libexec/rke2os/rke2-install.sh
 COPY --from=progs /output/metadata /usr/src/image/sbin/metadata
 COPY --from=progs /output/kubectx/kubectx /output/kubectx/kubens /usr/src/image/bin/
 
 COPY overlay/ /usr/src/image/
-COPY install.sh /usr/src/image/libexec/rke2os/install
 
-RUN mv /usr/src/image/libexec/k3os /usr/src/image/libexec/rke2os/                                 \
+RUN mv /usr/src/image/libexec/k3os /usr/src/image/libexec/rke2os                                  \
  && mv /usr/src/image/share/rancher/k3s /usr/src/image/share/rancher/rke2                         \
+ && mv /usr/src/image/share/rancher/k3os /usr/src/image/share/rancher/rke2os                      \
  && mv /usr/src/image/etc/sysctl.d/00-k3os.conf /usr/src/image/etc/sysctl.d/00-rke2os.conf        \
  && mv /usr/src/image/share/rancher/rke2/server/manifests/system-upgrade-plans/k3os-latest.yaml   \
     /usr/src/image/share/rancher/rke2/server/manifests/system-upgrade-plans/rke2os-latest.yaml    \
@@ -110,6 +116,8 @@ RUN mv /usr/src/image/libexec/k3os /usr/src/image/libexec/rke2os/               
  && mv /usr/src/image/share/rancher/rke2os/scripts/k3os-upgrade-kernel                            \
     /usr/src/image/share/rancher/rke2os/scripts/rke2os-upgrade-kernel
 
+COPY install.sh /usr/src/image/libexec/rke2os/install
+COPY --from=rke2 /output/install.sh /usr/src/image/libexec/rke2os/rke2-install.sh
 
 RUN mkdir -p /usr/src/image/etc/rancher/rke2                              \
  && ln -s /rke2os/system/rke2os/current/rke2os /usr/src/image/sbin/rke2os \

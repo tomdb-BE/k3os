@@ -16,7 +16,7 @@ quote_indent() {
 
 # --- escape most punctuation characters, except quotes, forward slash, and space ---
 escape() {
-    printf '%s' "$@" | sed -e 's/\([][!#$%&()*;<=>?\_`{|}]\)/\\\1/g;'
+    printf '%s' "$@" | sed -e 's/\([][!#$%&()*;<=>?\_`\{|\}]\)/\\\1/g;'
 }
 
 # --- escape double quotes ---

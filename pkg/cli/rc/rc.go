@@ -29,7 +29,7 @@ func Command() cli.Command {
 		},
 		Action: func(*cli.Context) {
 			doMounts()
-			doHotplug()
+                        doHotplug()
 			doClock()
 			doLoopback()
 			doHostname()

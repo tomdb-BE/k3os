@@ -32,6 +32,7 @@ RUN apt-get update -y \
  && apt-get install -y --no-install-recommends \
     bash \
     bash-completion \
+    busybox \
     ca-certificates \
     connman \
     conntrack \
@@ -58,6 +59,7 @@ RUN apt-get update -y \
     lsscsi \
     lvm2 \
     mdadm \
+    mdevctl \
     multipath-tools \
     nfs-client \
     open-iscsi \

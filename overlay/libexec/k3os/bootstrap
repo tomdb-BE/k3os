@@ -23,10 +23,9 @@ setup_users()
 {
     sed -i 's!/bin/ash!/bin/bash!' /etc/passwd
     mkdir -p /home
-    addgroup -S sudo
-    sed -i 's/^(sudo:.*)/\1rancher/g' /etc/group
-    addgroup -g 1000 rancher
-    adduser -s /bin/bash -u 1000 -D -G rancher rancher
+    sed -i 's/^\(sudo:.*\)/\1rancher/g' /etc/group
+    addgroup --gid 1000 rancher
+    adduser -q --shell /bin/bash --uid 1000 --gid 1000 --disabled-password --gecos "" rancher
     mkdir -p /home/rancher/.kube
     ln -sf /etc/rancher/rke2/rke2.yaml /home/rancher/.kube/config
     chown -R 1000:1000 /home/rancher/.kube
@@ -36,6 +35,7 @@ setup_users()
 setup_dirs()
 {
     mkdir -p /run/rke2os
+    chmod a+rw /dev/null
 }
 
 setup_config()
