@@ -59,7 +59,6 @@ RUN apt-get update -y \
     lsscsi \
     lvm2 \
     mdadm \
-    mdevctl \
     multipath-tools \
     nfs-client \
     open-iscsi \
@@ -75,6 +74,7 @@ RUN apt-get update -y \
     sudo \
     tar \
     tzdata \
+    udev \
     util-linux \
     vim \
     wireguard-tools \
