@@ -19,6 +19,8 @@ RUN chown -R _apt:root /packages \
  && apt-src update \
  && apt-src install insserv \
  && apt-src build insserv \
+ && apt-src install initscripts \
+ && apt-src build initscripts \
  && apt-src install openrc \
  && apt-src build openrc
 
@@ -28,11 +30,11 @@ ARG ARCH
 ARG DEBIAN_FRONTEND=noninteractive
 COPY --from=openrc-builder /packages/*.deb /tmp/
 RUN apt-get update -y \
- && apt-get install -y --no-install-recommends /tmp/insserv_1.21.0-1.1_amd64.deb /tmp/libeinfo1_0.42-2.1_amd64.deb /tmp/librc1_0.42-2.1_amd64.deb /tmp/openrc_0.42-2.1_amd64.deb \
+ && apt-get install -y --no-install-recommends /tmp/insserv_1.21.0-1.1_${ARCH}.deb /tmp/libeinfo1_0.42-2.1_${ARCH}.deb /tmp/librc1_0.42-2.1_${ARCH}.deb /tmp/initscripts_2.96-7_all.deb /tmp/openrc_0.42-2.1_${ARCH}.deb \
+ && apt-get install -y --no-install-recommends --reinstall openrc \
  && apt-get install -y --no-install-recommends \
-    bash \
     bash-completion \
-    busybox \
+    busybox-static \
     ca-certificates \
     connman \
     conntrack \
@@ -56,7 +58,6 @@ RUN apt-get update -y \
     kbd \
     libusb-0.1-4 \
     logrotate \
-    lsscsi \
     lvm2 \
     mdadm \
     multipath-tools \
@@ -76,12 +77,13 @@ RUN apt-get update -y \
     tzdata \
     udev \
     util-linux \
-    vim \
     wireguard-tools \
     wpasupplicant \
     xfsprogs \
-    xz-utils \
  && rm -r /tmp/* \
 # replicate the default "no idea, friend" behavior of virt-what
  && touch /usr/sbin/virt-what \
  && chmod +x /usr/sbin/virt-what
+# Set Busybox links
+RUN busybox --install -s
+

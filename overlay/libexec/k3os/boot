@@ -41,41 +41,32 @@ setup_sudoers()
 setup_services()
 {
     for i in hwdrivers dmesg devfs loadkmap udev udev-root udev-coldplug; do
-        rm -f /etc/runlevels/sysinit/$i
-        ln -s /etc/init.d/$i /etc/runlevels/sysinit
+        ln -s /etc/init.d/$i /etc/runlevels/sysinit/
     done
 
     for i in acpid hwclock syslog bootmisc hostname sysctl modules connman dbus haveged issue; do
-        rm -f /etc/runlevels/boot/$i
-        ln -s /etc/init.d/$i /etc/runlevels/boot
+        ln -s /etc/init.d/$i /etc/runlevels/boot/
     done
 
     for i in sshd "local" ccapply iscsid; do
-        rm -f /etc/runlevels/default/$i
-        ln -s /etc/init.d/$i /etc/runlevels/default
+        ln -s /etc/init.d/$i /etc/runlevels/default/
     done
 
     for i in savecache killprocs mount-ro; do
-        rm -f /etc/runlevels/shutdown/$i
-        ln -s /etc/init.d/$i /etc/runlevels/shutdown
+        ln -s /etc/init.d/$i /etc/runlevels/shutdown/
     done
 
     for what in unknown $(virt-what || true); do
         case $what in
             kvm|qemu)
-                rm -f /etc/runlevels/boot/qemu-guest-agent
                 ln -s /etc/init.d/qemu-guest-agent /etc/runlevels/boot/
                 ;;
             microsoft|hyperv)
-                rm -f /etc/runlevels/boot/hv_kvp_daemon
-                rm -f /etc/runlevels/boot/hv_fcopy_daemon
-                rm -f /etc/runlevels/boot/hv_vss_daemon
                 ln -s /etc/init.d/hv_kvp_daemon /etc/runlevels/boot/
                 ln -s /etc/init.d/hv_fcopy_daemon /etc/runlevels/boot/
                 ln -s /etc/init.d/hv_vss_daemon /etc/runlevels/boot/
                 ;;
             vmw|vmware)
-                rm -f /etc/runlevels/boot/open-vm-tools
                 ln -s /etc/init.d/open-vm-tools /etc/runlevels/boot/
                 ;;
         esac
@@ -86,18 +77,15 @@ setup_config()
 {
     rke2os config --boot
     if [ -e /etc/conf.d/udev-settle ]; then
-        rm -f /etc/runlevels/sysinit/udev-settle
         ln -s /etc/init.d/udev-settle /etc/runlevels/sysinit/
     fi
     if [ -e /var/lib/connman/cloud-config.config ]; then
         echo 'rc_want="wpa_supplicant"' >> /etc/conf.d/connman
     fi
     if [ -e /etc/conf.d/cloud-config ]; then
-        rm -f /etc/runlevels/boot/cloud-config
         ln -s /etc/init.d/cloud-config /etc/runlevels/boot/
     fi
     if [ -e /etc/conf.d/rngd ]; then
-        rm -f /etc/runlevels/sysinit/rngd
         ln -s /etc/init.d/rngd /etc/runlevels/boot/
     fi
 }
@@ -141,6 +129,7 @@ setup_hostname()
     fi
 
     mkdir -p /var/lib/rancher/rke2os
+    mkdir -p /var/lib/dbus
     HOSTNAME=rke2os-${RANDOM}
     echo $HOSTNAME > /var/lib/rancher/rke2os/hostname
     cp /var/lib/rancher/rke2os/hostname /etc/hostname

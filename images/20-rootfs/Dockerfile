@@ -54,12 +54,6 @@ RUN rm -rf /usr/libexec/kubernetes \
  && mkdir /usr/src/image/libexec \
  && ln -s /var/lib/rancher/rke2/agent/libexec/kubernetes /usr/src/image/libexec/kubernetes
 
-# setup mdev
-RUN ln -sf /usr/bin/busybox /usr/src/image/sbin/mdev
-
-# setup init
-RUN ln -sf /usr/bin/busybox /usr/src/image/sbin/init
-
 # cleanup files hostname/hosts
 RUN rm -rf \
     /usr/src/image/etc/hosts \
@@ -69,6 +63,13 @@ RUN rm -rf \
     /usr/src/image/etc/ca-certificates* \
     /usr/src/image/etc/os-release \
  && ln -s /usr/lib/os-release /usr/src/image/etc/os-release
+
+# service cleanup
+RUN rm -rf \
+    /usr/src/image/etc/runlevels/boot/* \
+    /usr/src/image/etc/runlevels/sysinit/* \
+    /usr/src/image/etc/runlevels/default/* \
+    /usr/src/image/etc/runlevels/shutdown/*
 
 RUN rm -r \
     /usr/src/image/bin/apt* \
@@ -94,12 +95,7 @@ RUN rm -r \
     /usr/src/image/games \
     /usr/src/image/lib/udev \
     /usr/src/image/share/applications \
-    /usr/src/image/share/ca-certificates \
-    /usr/src/image/share/icons \
-    /usr/src/image/share/vim/vim81/syntax/aptconf.vim \
-    /usr/src/image/share/vim/vim81/spell \
-    /usr/src/image/share/vim/vim81/tutor \
-    /usr/src/image/share/vim/vim81/doc
+    /usr/src/image/share/ca-certificates
 COPY --from=progs /output/metadata /usr/src/image/sbin/metadata
 COPY --from=progs /output/kubectx/kubectx /output/kubectx/kubens /usr/src/image/bin/
 
@@ -109,8 +105,8 @@ RUN mv /usr/src/image/libexec/k3os /usr/src/image/libexec/rke2os                
  && mv /usr/src/image/share/rancher/k3s /usr/src/image/share/rancher/rke2                         \
  && mv /usr/src/image/share/rancher/k3os /usr/src/image/share/rancher/rke2os                      \
  && mv /usr/src/image/etc/sysctl.d/00-k3os.conf /usr/src/image/etc/sysctl.d/00-rke2os.conf        \
- && mv /usr/src/image/share/rancher/rke2/server/manifests/system-upgrade-plans/k3os-latest.yaml   \
-    /usr/src/image/share/rancher/rke2/server/manifests/system-upgrade-plans/rke2os-latest.yaml    \
+ && rm -rf /usr/src/image/share/rancher/rke2/server/manifests/system-upgrade-plans                \
+ && rm -f /usr/src/image/share/rancher/rke2/server/manifests/system-upgrade-controller.yaml       \
  && mv /usr/src/image/share/rancher/rke2os/scripts/k3os-upgrade-rootfs                            \
     /usr/src/image/share/rancher/rke2os/scripts/rke2os-upgrade-rootfs                             \
  && mv /usr/src/image/share/rancher/rke2os/scripts/k3os-upgrade-kernel                            \
