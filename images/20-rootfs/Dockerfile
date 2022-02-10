@@ -71,7 +71,7 @@ RUN rm -rf \
     /usr/src/image/etc/runlevels/default/* \
     /usr/src/image/etc/runlevels/shutdown/*
 
-RUN rm -r \
+RUN rm -rf \
     /usr/src/image/bin/apt* \
     /usr/src/image/bin/debconf-apt* \
     /usr/src/image/etc/apt \
