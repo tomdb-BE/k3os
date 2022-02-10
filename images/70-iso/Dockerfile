@@ -4,12 +4,12 @@ ARG TAG
 FROM ${REPO}/rke2os-package:${TAG} as package
 FROM ${REPO}/rke2os-base:${TAG} as base
 ARG ARCH
-RUN apt-get install -y --no-install-recommends xorriso mtools libvirt0 qemu-utils grub-efi
+RUN apt-get install -y --no-install-recommends xorriso mtools libvirt0 qemu-utils
 RUN if [ "$ARCH" = "amd64" ]; then \
-        apt-get install -y --no-install-recommends qemu-system-x86 ovmf; \
+        apt-get install -y --no-install-recommends qemu-system-x86 ovmf grub-efi; \
         ln -s /usr/bin/qemu-system-x86_64 /usr/bin/qemu-system; \
     elif [ "$ARCH" = "arm64" ]; then \
-        apt-get install -y --no-install-recommends qemu-system-aarch64; \
+        apt-get install -y --no-install-recommends qemu-system-aarch64 grub-common; \
         ln -s /usr/bin/qemu-system--aarch64 /usr/bin/qemu-system; \
     fi
 RUN qemu-img create -f qcow2 /hd.img 40G
